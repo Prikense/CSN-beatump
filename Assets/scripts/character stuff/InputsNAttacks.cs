@@ -77,6 +77,9 @@ public class InputsNAttacks : MonoBehaviour
         animator.SetBool("5s", slashButton);
         animator.SetBool("2h", heavyButton);
         animator.SetBool("5h", heavyButton);
+        //air bools
+        animator.SetBool("jp", punchButton);
+
 
         //when first pressed
         //old version
@@ -133,7 +136,7 @@ public class InputsNAttacks : MonoBehaviour
             }
         }
 
-
+        //Ground normals
        //2p
         if(gatlingCancel && punchButton && keyY < 0 && //gatling table
         (animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2P") ||
@@ -217,6 +220,19 @@ public class InputsNAttacks : MonoBehaviour
             animator.SetBool("5h", heavyButton);
             gatlingCancel = false;
         }
+
+
+        //Air normals
+       //2p
+        if(gatlingCancel && punchButton && !moveScript.isGrounded && //gatling table
+        (animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP") || 
+        animator.GetCurrentAnimatorStateInfo(0).IsTag("air"))
+        ){
+            // hitbox.SetActive(false);
+            animator.SetBool("jp", punchButton);
+            gatlingCancel = false;
+        }
+
 
         //check for hitbox collision
         if(hitBoxstate == ColliderState.active){
@@ -312,6 +328,17 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 80;
             knockbackForce = 6;
         }
+
+        //air normals
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP")){
+            //hitbox activation
+            boxPos = new Vector3 (.7f, -.56f, 0);
+            boxSize = new Vector3 (1f, 1.24f, 1f);
+            hitBoxstate = ColliderState.active;
+            dmg = 15;
+            knockbackForce = 1;
+            gatlingCancel = true;
+        }
     }
 
     //for resizing or moving 2nd hitboxes on moves
@@ -324,6 +351,7 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 40;
             knockbackForce = 4;
         }
+        //for air hitboxes
     }
 
     private void OnDrawGizmos() {
