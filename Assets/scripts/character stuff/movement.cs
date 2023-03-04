@@ -27,7 +27,8 @@ public class movement : MonoBehaviour
     [SerializeField] private LayerMask gMask;
     [SerializeField] private InputsNAttacks inputScript;
     private bool specialBoost = false;
-    // private float aux = 0;
+    private float aux = 0;
+    private float squatFrames = 3f/60f;
 
 
     // Start is called before the first frame update
@@ -54,7 +55,7 @@ public class movement : MonoBehaviour
         animator.SetBool("jumpAction", jumpSquat);
         animator.SetInteger("SpeedY", (int)body.velocity.y);
 
-        if(jumpSquat || isGrounded && animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk")){
+        if(isGrounded && animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk")){
             Speed = transform.right* keyX;
             specialBoost = false;
         }
@@ -62,11 +63,13 @@ public class movement : MonoBehaviour
         if(animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal") || keyY < 0){//if you are attacking or crouching you cant move
             Speed = transform.right*0;
         }
-       if(isGrounded && (keyY > 0 || jumpSquat) && !animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal")){
+       if(isGrounded && (keyY > 0 || jumpSquat) && animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk")){
             jumpSquat = true;
             // body.velocity = new Vector2(body.velocity.x/3, 0);
         }
-
+        if(jumpSquat){
+            aux+=Time.deltaTime;
+        }
     //     //jump force
     //     if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jump") && jumpSquat){
 
@@ -87,13 +90,17 @@ public class movement : MonoBehaviour
         MovementTime();
     }
 
-    public void jumpTime(){
-        jumpSquat=false;
-        body.AddForce(Vector2.up*JumpHeight+jumpSpeed*Speed, ForceMode2D.Impulse);
+    public void jumpTime(float a){
+        aux=0;
+        body.velocity = new Vector2 (body.velocity.x,0);
+        body.AddForce(Vector2.up*JumpHeight+Vector2.right*jumpSpeed*a, ForceMode2D.Impulse);
     }
 
     void MovementTime(){
-        if(!isGrounded){
+        if(aux>=squatFrames){
+            jumpSquat=false;
+            jumpTime(Input.GetAxisRaw("Horizontal"));
+        }else if(!isGrounded){
             body.velocity -= new Vector2 (0,fallSpeed);
         }
         // if(jumpTime){

@@ -703,8 +703,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 300
-  fallSpeed: 6
-  JumpHeight: 60
+  fallSpeed: 5
+  JumpHeight: 65
   jumpSpeed: 15
   isGrounded: 0
   Speed: {x: 0, y: 0}

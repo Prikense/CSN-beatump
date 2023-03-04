@@ -14,9 +14,9 @@ public class animationEventsHandler : MonoBehaviour
     {
         inputScript = transform.GetComponentInParent<InputsNAttacks>(true);
     }
-    public void jumpEvent(){
-        inputScript.moveScript.jumpTime();
-    }
+    // public void jumpEvent(){
+    //     inputScript.moveScript.jumpTime();
+    // }
     public void hitboxActive(){
         inputScript.hitboxStuff();
     }
