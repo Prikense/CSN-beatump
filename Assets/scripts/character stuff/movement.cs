@@ -27,7 +27,7 @@ public class movement : MonoBehaviour
     [SerializeField] private LayerMask gMask;
     [SerializeField] private InputsNAttacks inputScript;
     private bool specialBoost = false;
-    
+    // private float aux = 0;
 
 
     // Start is called before the first frame update
@@ -47,7 +47,7 @@ public class movement : MonoBehaviour
         //walking
         //we get the input first
         float keyX = Input.GetAxisRaw("Horizontal");
-        isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.2f, gMask);
+        isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.1f, gMask);
 
         animator.SetFloat("speed", Speed.x);
         animator.SetBool("grounded", isGrounded);
@@ -62,10 +62,11 @@ public class movement : MonoBehaviour
         if(animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal") || keyY < 0){//if you are attacking or crouching you cant move
             Speed = transform.right*0;
         }
-       if(isGrounded && keyY > 0 && !animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal")){
+       if(isGrounded && (keyY > 0 || jumpSquat) && !animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal")){
             jumpSquat = true;
             // body.velocity = new Vector2(body.velocity.x/3, 0);
         }
+
     //     //jump force
     //     if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jump") && jumpSquat){
 
