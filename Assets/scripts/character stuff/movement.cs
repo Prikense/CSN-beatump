@@ -31,6 +31,7 @@ public class movement : MonoBehaviour
     private float squatFrames = 3f/60f;
     [SerializeField] private bool dJump = true;
     private bool jumpHold = false;
+    [SerializeField] private Vector2 velocitySave = Vector2.zero;
 
 
     // Start is called before the first frame update
@@ -87,7 +88,7 @@ public class movement : MonoBehaviour
             jumpHold = false;
         }
         //double jump input
-        if(!jumpHold && !jumpSquat && dJump && !isGrounded && keyY > 0 && (animator.GetCurrentAnimatorStateInfo(0).IsTag("air") || inputScript.jumpCancel)){
+        if(!inputScript.hitStop && !jumpHold && !jumpSquat && dJump && !isGrounded && keyY > 0 && (animator.GetCurrentAnimatorStateInfo(0).IsTag("air") || inputScript.jumpCancel)){
             jumpTime2(keyX);
             animator.SetBool("jump2", true);
             dJump = false;
@@ -97,7 +98,17 @@ public class movement : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate(){
-        MovementTime();
+        if(!inputScript.hitStop){
+            MovementTime();
+        }
+    }
+    public void Sleeptime(){
+        velocitySave = body.velocity;
+        body.Sleep();
+    }
+    public void WakeTime(){
+        body.velocity = velocitySave;
+        body.WakeUp();   
     }
 
     public void jumpTime(float a){
@@ -117,6 +128,7 @@ public class movement : MonoBehaviour
         }
         body.AddForce(Vector2.up*JumpHeight/1.2f, ForceMode2D.Impulse);
     }
+
 
     void MovementTime(){
         if(aux>=squatFrames){

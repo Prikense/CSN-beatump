@@ -720,6 +720,7 @@ MonoBehaviour:
     m_Bits: 128
   inputScript: {fileID: 0}
   dJump: 1
+  velocitySave: {x: 0, y: 0}
 --- !u!50 &845715827
 Rigidbody2D:
   serializedVersion: 4
@@ -799,7 +800,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   dmg: 0
-  bufferWindow: 0.05
+  knockbackForce: 0
+  hitStopTime: 0
+  hitStop: 0
+  bufferWindow: 0.3
 --- !u!1 &1772066605
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,8 +1027,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2112263231}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.19, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 4.635937, z: 1}
+  m_LocalPosition: {x: 3.19, y: 2.83, z: 0}
+  m_LocalScale: {x: 1, y: 12.94, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 789669492}
