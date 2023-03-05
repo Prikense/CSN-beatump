@@ -32,8 +32,8 @@ public class InputsNAttacks : MonoBehaviour
     public Color inactiveColor;
     public Color activeColor;
     public  ColliderState hitBoxstate;
-
     [SerializeField] private LayerMask layers;
+    private int aux = 0; //this is used for more than 2 multihit attacks, to spawn the differente hitboxes past #2
 
 
     //attack stats
@@ -85,6 +85,7 @@ public class InputsNAttacks : MonoBehaviour
         //air bools
         animator.SetBool("jp", punchButton);
         animator.SetBool("jk", kickButton);
+        animator.SetBool("js", slashButton);
 
 
         //when first pressed
@@ -250,7 +251,17 @@ public class InputsNAttacks : MonoBehaviour
             gatlingCancel = false;
             // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -1.41f, moveScript.anchor.transform.localPosition.z);
         }
-
+       //js
+        if(gatlingCancel && slashButton && !moveScript.isGrounded && //gatling table
+        (animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP") ||
+        animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK") ||
+        animator.GetCurrentAnimatorStateInfo(0).IsTag("air"))
+        ){
+            // bodyCollider.size = new Vector2 (1.35f, 2.3f);
+            animator.SetBool("js", slashButton);
+            gatlingCancel = false;
+            // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -1.41f, moveScript.anchor.transform.localPosition.z);
+        }
 
         //check for hitbox collision
         if(hitBoxstate == ColliderState.active){
@@ -266,6 +277,7 @@ public class InputsNAttacks : MonoBehaviour
            animator.GetCurrentAnimatorStateInfo(0).IsTag("air") ){
             hitBoxstate = ColliderState.inactive;
             jumpCancel = false;
+            aux = 0;
             // bodyCollider.size = new Vector2 (1.35f, 3.75f);
             // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -2, moveScript.anchor.transform.localPosition.z);
            }
@@ -285,8 +297,11 @@ public class InputsNAttacks : MonoBehaviour
         
         //jump cancel for 2k, 2s and 2h
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2K") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2S") ||
-           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2H")){
+           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2S") || 
+           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2H") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK") ||
+           animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jH")){
             jumpCancel = true;
         }
 
@@ -381,6 +396,17 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 25;
             //knockbackForce = 2;
         }
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS")){
+            //hitbox activation
+            boxPos = new Vector3 (1.73f, -.71f, 0);
+            boxSize = new Vector3 (2.3f, 1.28f, 1f);
+            hitBoxstate = ColliderState.active;
+            dmg = 30;
+            if(aux != 0){
+                dmg = 20;
+            }
+            //knockbackForce = 2;
+        }
     }
 
     //for resizing or moving 2nd hitboxes on moves
@@ -401,6 +427,26 @@ public class InputsNAttacks : MonoBehaviour
             hitBoxstate = ColliderState.active;
             dmg = 12;
             //knockbackForce = 1;
+        }
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS")){
+            switch(aux){
+                case 0:
+                    //hitbox activation
+                    boxPos = new Vector3 (2.13f, -.55f, 0);
+                    boxSize = new Vector3 (2.3f, 1.28f, 1f);
+                    hitBoxstate = ColliderState.active;
+                    dmg = 20;
+                    aux=1;
+                    break;
+                case 1:
+                    //hitbox activation
+                    boxPos = new Vector3 (1.69f, -.35f, 0);
+                    boxSize = new Vector3 (1.52f, 1.8f, 1f);
+                    hitBoxstate = ColliderState.active;
+                    dmg = 40;
+                    aux =0;
+                    break;
+            }
         }
     }
 

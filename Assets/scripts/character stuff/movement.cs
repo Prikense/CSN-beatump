@@ -29,7 +29,7 @@ public class movement : MonoBehaviour
     private bool specialBoost = false;
     private float aux = 0;
     private float squatFrames = 3f/60f;
-    private bool dJump = true;
+    [SerializeField] private bool dJump = true;
     private bool jumpHold = false;
 
 
