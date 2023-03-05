@@ -58,15 +58,17 @@ public class movement : MonoBehaviour
         animator.SetBool("jump2", false);
         animator.SetInteger("SpeedY", (int)body.velocity.y);
 
+        //grounded variables
+        Speed = transform.right* keyX;
         if(isGrounded && animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk")){
-            Speed = transform.right* keyX;
             specialBoost = false;
             dJump = true;
         }
-        //jumpsquat animation
+        //crouch stuff
         if(animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal") || keyY < 0){//if you are attacking or crouching you cant move
             Speed = transform.right*0;
         }
+        //jumpsquat animation
        if(isGrounded && (keyY > 0 || jumpSquat) && (animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk") || inputScript.jumpCancel)){
             jumpSquat = true;
             jumpHold = true;
@@ -91,14 +93,6 @@ public class movement : MonoBehaviour
             dJump = false;
             // body.velocity = new Vector2(body.velocity.x/3, 0);
         }
-
-        //crouch
-        // if(isGrounded && keyY < 0){
-           //here goes bool crouch = true;
-           
-        // }else{
-            //make it false here
-        // }
     }
 
     // Update is called once per frame
@@ -115,18 +109,13 @@ public class movement : MonoBehaviour
         aux=0;
         float expectedSpeed = (jumpSpeed*a);
         body.velocity = new Vector2 (body.velocity.x,0);
-
         //x speed capping
-         if(Mathf.Abs(expectedSpeed - body.velocity.x) <= 0){
-            if(body.velocity.x > 0){
-                body.velocity = new Vector2 (Mathf.Max(20, expectedSpeed+body.velocity.x),0);
+         if(Mathf.Abs(expectedSpeed - body.velocity.x) <= 3){
+                body.velocity = new Vector2 (body.velocity.x,0);
             }else{
-                body.velocity = new Vector2 (Mathf.Max(-20, expectedSpeed+body.velocity.x),0);
-            }
-         }else{
             body.velocity = new Vector2 (expectedSpeed,0);
         }
-        body.AddForce(Vector2.up*JumpHeight, ForceMode2D.Impulse);
+        body.AddForce(Vector2.up*JumpHeight/1.2f, ForceMode2D.Impulse);
     }
 
     void MovementTime(){

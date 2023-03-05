@@ -210,7 +210,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -703,9 +703,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 300
-  fallSpeed: 5
-  JumpHeight: 65
-  jumpSpeed: 15
+  fallSpeed: 4
+  JumpHeight: 50
+  jumpSpeed: 14
   isGrounded: 0
   Speed: {x: 0, y: 0}
   currentFloorHeight: -2
