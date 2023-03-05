@@ -104,11 +104,13 @@ public class movement : MonoBehaviour
     }
     public void Sleeptime(){
         velocitySave = body.velocity;
-        body.Sleep();
+        body.constraints = RigidbodyConstraints2D.FreezeAll | RigidbodyConstraints2D.FreezeRotation;
+        //body.Sleep();
     }
     public void WakeTime(){
+        body.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
         body.velocity = velocitySave;
-        body.WakeUp();   
+        //body.WakeUp();   
     }
 
     public void jumpTime(float a){
