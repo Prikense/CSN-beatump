@@ -86,6 +86,7 @@ public class InputsNAttacks : MonoBehaviour
         animator.SetBool("jp", punchButton);
         animator.SetBool("jk", kickButton);
         animator.SetBool("js", slashButton);
+        animator.SetBool("jh", heavyButton);
 
 
         //when first pressed
@@ -241,7 +242,7 @@ public class InputsNAttacks : MonoBehaviour
             gatlingCancel = false;
             // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -1.41f, moveScript.anchor.transform.localPosition.z);
         }
-        //jk
+        //jK
         if(gatlingCancel && kickButton && !moveScript.isGrounded && //gatling table
         (animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP") || 
         animator.GetCurrentAnimatorStateInfo(0).IsTag("air"))
@@ -251,7 +252,7 @@ public class InputsNAttacks : MonoBehaviour
             gatlingCancel = false;
             // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -1.41f, moveScript.anchor.transform.localPosition.z);
         }
-       //js
+       //jS
         if(gatlingCancel && slashButton && !moveScript.isGrounded && //gatling table
         (animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP") ||
         animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK") ||
@@ -259,6 +260,18 @@ public class InputsNAttacks : MonoBehaviour
         ){
             // bodyCollider.size = new Vector2 (1.35f, 2.3f);
             animator.SetBool("js", slashButton);
+            gatlingCancel = false;
+            // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -1.41f, moveScript.anchor.transform.localPosition.z);
+        }
+        //jH
+        if(gatlingCancel && heavyButton && !moveScript.isGrounded && //gatling table
+        (animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP") ||
+        animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK") ||
+        animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS") ||
+        animator.GetCurrentAnimatorStateInfo(0).IsTag("air"))
+        ){
+            // bodyCollider.size = new Vector2 (1.35f, 2.3f);
+            animator.SetBool("jh", heavyButton);
             gatlingCancel = false;
             // moveScript.anchor.transform.localPosition = new Vector3 (moveScript.anchor.transform.localPosition.x, -1.41f, moveScript.anchor.transform.localPosition.z);
         }
@@ -407,6 +420,14 @@ public class InputsNAttacks : MonoBehaviour
             }
             //knockbackForce = 2;
         }
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jH")){
+            //hitbox activation
+            boxPos = new Vector3 (2.14f, .33f, 0);
+            boxSize = new Vector3 (1.63f, 1.4f, 1f);
+            hitBoxstate = ColliderState.active;
+            dmg = 70;
+            //knockbackForce = 2;
+        }
     }
 
     //for resizing or moving 2nd hitboxes on moves
@@ -447,6 +468,14 @@ public class InputsNAttacks : MonoBehaviour
                     aux =0;
                     break;
             }
+        }
+        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jH") && !gatlingCancel){
+            //hitbox activation
+            boxPos = new Vector3 (1.57f, -.95f, 0);
+            boxSize = new Vector3 (1.94f, 2.17f, 1f);
+            hitBoxstate = ColliderState.active;
+            dmg = 70;
+            //knockbackForce = 1;
         }
     }
 
