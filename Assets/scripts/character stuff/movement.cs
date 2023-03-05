@@ -13,7 +13,7 @@ public class movement : MonoBehaviour
     [SerializeField]public bool isGrounded;
     [SerializeField] private Vector2 Speed;
     [SerializeField]private float currentFloorHeight;
-    [SerializeField] private GameObject anchor;
+    [SerializeField] public  GameObject anchor;
 
     //input
     [SerializeField] private Rigidbody2D body;
@@ -29,6 +29,8 @@ public class movement : MonoBehaviour
     private bool specialBoost = false;
     private float aux = 0;
     private float squatFrames = 3f/60f;
+    private bool dJump = true;
+    private bool jumpHold = false;
 
 
     // Start is called before the first frame update
@@ -53,29 +55,43 @@ public class movement : MonoBehaviour
         animator.SetFloat("speed", Speed.x);
         animator.SetBool("grounded", isGrounded);
         animator.SetBool("jumpAction", jumpSquat);
+        animator.SetBool("jump2", false);
         animator.SetInteger("SpeedY", (int)body.velocity.y);
 
         if(isGrounded && animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk")){
             Speed = transform.right* keyX;
             specialBoost = false;
+            dJump = true;
         }
         //jumpsquat animation
         if(animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal") || keyY < 0){//if you are attacking or crouching you cant move
             Speed = transform.right*0;
         }
-       if(isGrounded && (keyY > 0 || jumpSquat) && animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk")){
+       if(isGrounded && (keyY > 0 || jumpSquat) && (animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk") || inputScript.jumpCancel)){
             jumpSquat = true;
+            jumpHold = true;
             // body.velocity = new Vector2(body.velocity.x/3, 0);
+        }
+        if(animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal") && !inputScript.jumpCancel){
+            jumpSquat =false;
         }
         if(jumpSquat){
             aux+=Time.deltaTime;
+        }else{
+            aux=0;
         }
-    //     //jump force
-    //     if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jump") && jumpSquat){
+        //up input manager
+        if(keyY <= 0){
+            jumpHold = false;
+        }
+        //double jump input
+        if(!jumpHold && !jumpSquat && dJump && !isGrounded && keyY > 0 && (animator.GetCurrentAnimatorStateInfo(0).IsTag("air") || inputScript.jumpCancel)){
+            jumpTime2(keyX);
+            animator.SetBool("jump2", true);
+            dJump = false;
+            // body.velocity = new Vector2(body.velocity.x/3, 0);
+        }
 
-    //         jumpTime = true;
-    //         jumpSquat = false;
-    //     }
         //crouch
         // if(isGrounded && keyY < 0){
            //here goes bool crouch = true;
@@ -94,6 +110,23 @@ public class movement : MonoBehaviour
         aux=0;
         body.velocity = new Vector2 (body.velocity.x,0);
         body.AddForce(Vector2.up*JumpHeight+Vector2.right*jumpSpeed*a, ForceMode2D.Impulse);
+    }
+    public void jumpTime2(float a){
+        aux=0;
+        float expectedSpeed = (jumpSpeed*a);
+        body.velocity = new Vector2 (body.velocity.x,0);
+
+        //x speed capping
+         if(Mathf.Abs(expectedSpeed - body.velocity.x) <= 0){
+            if(body.velocity.x > 0){
+                body.velocity = new Vector2 (Mathf.Max(20, expectedSpeed+body.velocity.x),0);
+            }else{
+                body.velocity = new Vector2 (Mathf.Max(-20, expectedSpeed+body.velocity.x),0);
+            }
+         }else{
+            body.velocity = new Vector2 (expectedSpeed,0);
+        }
+        body.AddForce(Vector2.up*JumpHeight, ForceMode2D.Impulse);
     }
 
     void MovementTime(){
