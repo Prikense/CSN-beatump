@@ -39,11 +39,14 @@ public class InputsNAttacks : MonoBehaviour
     //attack stats
     [SerializeField] private int dmg = 0;
     [SerializeField] private int knockbackForce = 0;
+    private bool launcher = false;
+    private int hitStun = 0;
     [SerializeField] public float hitStopTime = 0;
     [SerializeField] public bool hitStop = false;
 
     [SerializeField] private float bufferWindow = .05f;
     [SerializeField] private List<inputNtime> bufferlist = new List<inputNtime>();
+    private EnemyJuggling EnScript;
 
 
     // Start is called before the first frame update
@@ -295,16 +298,21 @@ public class InputsNAttacks : MonoBehaviour
                 Debug.Log("sleepy time");
                 animator.enabled = false;
                 moveScript.Sleeptime();
+        
+                EnScript.animator.enabled = false;
+                EnScript.Sleeptime();
             }
         }
         if(hitStopTime <= 0 && !animator.isActiveAndEnabled){    
-            Debug.Log("wakey wakey");        
+            Debug.Log("wakey wakey"); 
             animator.enabled = true;
             hitStop = false;
             moveScript.WakeTime();
-        }
 
-        // Debug.Log("animation time: "+animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            
+            EnScript.animator.enabled = true;
+            EnScript.WakeTime();
+        }
     }
 
 
@@ -315,9 +323,22 @@ public class InputsNAttacks : MonoBehaviour
         gatlingCancel = true;
         //we deactivate the hitbox
         hitBoxstate = ColliderState.inactive;
-        //enenmy knockback time
-        // collider2Dhit.GetComponent<Rigidbody2D>().AddForce(knockbackForce*(transform.right), ForceMode2D.Impulse);
-        
+
+        //enenmy dmg and hitstun time
+        EnScript =collider2Dhit.GetComponent<EnemyJuggling>();
+        EnScript.playerInScript = this;
+        EnScript.health -= dmg;
+        EnScript.hitStunAmount = hitStun;
+
+        //knockback
+        if(launcher){// for vertical launching moves
+            EnScript.body.AddForce(knockbackForce*(transform.right+transform.up), ForceMode2D.Impulse);
+        }else if(EnScript.isGrounded){//if on the ground
+            EnScript.body.AddForce(knockbackForce*(transform.right), ForceMode2D.Impulse);
+        }else{//a normal hit on air
+            EnScript.body.AddForce(knockbackForce*(transform.right+transform.up/1.2f), ForceMode2D.Impulse);
+        }
+
         //jump cancel for 2k, 2s and 2h
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2K") ||
            animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2S") || 
@@ -341,8 +362,10 @@ public class InputsNAttacks : MonoBehaviour
             hitBoxstate = ColliderState.active;
             gatlingCancel = true;
             dmg = 10;
-            knockbackForce = 3;
+            knockbackForce = 30;
             hitStopTime = 5;
+            hitStun = 12;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5P")){
             //hitbox activation
@@ -352,6 +375,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 30;
             knockbackForce = 18;
             hitStopTime = 8;
+            hitStun = 22;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2K")){
             //hitbox activation
@@ -361,6 +386,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 20;
             knockbackForce = 16;
             hitStopTime = 5;
+            hitStun = 12;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5K")){
             //hitbox activation
@@ -371,6 +398,8 @@ public class InputsNAttacks : MonoBehaviour
             knockbackForce = 20;
             hitStopTime = 9;
             body.velocity = 12*(transform.right)+8*transform.up;
+            hitStun = 30;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2S")){
             //hitbox activation
@@ -380,6 +409,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 50;
             knockbackForce = 15;
             hitStopTime = 5;
+            hitStun = 16;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5S")){
             //hitbox activation
@@ -389,6 +420,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 60;
             knockbackForce = 18;
             hitStopTime = 6;
+            hitStun = 15;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2H")){
             //hitbox activation
@@ -399,6 +432,8 @@ public class InputsNAttacks : MonoBehaviour
             knockbackForce = 5;
             hitStopTime = 6;
             body.velocity = 10*(transform.right);
+            hitStun = 40;
+            launcher = true;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5H")){
             //hitbox activation
@@ -408,6 +443,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 80;
             knockbackForce = 22;
             hitStopTime = 10;
+            hitStun = 35;
+            launcher = false;
         }
 
         //air normals
@@ -420,6 +457,8 @@ public class InputsNAttacks : MonoBehaviour
             knockbackForce = 3;
             hitStopTime = 5;
             gatlingCancel = true;
+            hitStun = 15;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK")){
             //hitbox activation
@@ -429,6 +468,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 25;
             knockbackForce = 12;
             hitStopTime = 6;
+            hitStun = 16;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS")){
             //hitbox activation
@@ -438,9 +479,13 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 30;
             if(aux != 0){
                 dmg = 20;
+                hitStun = 10;
+                launcher = false;
             }
             knockbackForce = 4;
             hitStopTime = 4;
+            hitStun = 12;
+            launcher = false;
         }
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jH")){
             //hitbox activation
@@ -450,6 +495,8 @@ public class InputsNAttacks : MonoBehaviour
             dmg = 70;
             knockbackForce = 25;
             hitStopTime = 9;
+            hitStun = 30;
+            launcher = true;
         }
     }
 
@@ -464,6 +511,8 @@ public class InputsNAttacks : MonoBehaviour
                 dmg = 40;
                 knockbackForce = 12;
                 hitStopTime = 8;
+                hitStun = 40;
+                launcher = false;
             }
             //for air hitboxes
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK") && !gatlingCancel){
@@ -474,6 +523,8 @@ public class InputsNAttacks : MonoBehaviour
                 dmg = 12;
                 knockbackForce = 9;
                 hitStopTime = 3;
+                hitStun = 6;
+                launcher = false;
             }
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS")){
                 switch(aux){
@@ -486,6 +537,8 @@ public class InputsNAttacks : MonoBehaviour
                         aux=1;
                         knockbackForce = 15;
                         hitStopTime = 4;
+                        hitStun = 6;
+                        launcher = false;
                         break;
                     case 1:
                         //hitbox activation
@@ -496,6 +549,8 @@ public class InputsNAttacks : MonoBehaviour
                         aux =0;
                         knockbackForce = 15;
                         hitStopTime = 6;
+                        hitStun = 20;
+                        launcher = true;
                         break;
                 }
             }
@@ -507,6 +562,8 @@ public class InputsNAttacks : MonoBehaviour
                 dmg = 70;
                 knockbackForce = 25;
                 hitStopTime = 9;
+                hitStun = 30;
+                launcher = true;
             }
         }
     }
