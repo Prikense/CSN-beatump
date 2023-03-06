@@ -252,18 +252,18 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.18333334
-    functionName: hitboxActive
+    functionName: hitboxFunc
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 6
     messageOptions: 0
   - time: 0.21666667
-    functionName: hitboxChange
+    functionName: hitboxFunc
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 7
     messageOptions: 0
   - time: 0.26666668
     functionName: hitboxDeactivate

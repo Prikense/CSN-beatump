@@ -17,6 +17,7 @@ public class EnemyJuggling : MonoBehaviour
     //animator stuff
     [SerializeField] public Animator animator;
     [SerializeField] public InputsNAttacks playerInScript;
+    private int aux = 2;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +38,12 @@ public class EnemyJuggling : MonoBehaviour
     }
 
     void FixedUpdate(){
+        if (aux == 1){
+            aux--;
+        }else if(aux == 0){
+            animator.enabled = false;
+            aux = 2;
+        }
         //gravity
         if(!isGrounded){
             body.velocity -= new Vector2 (0,fallSpeed);
@@ -49,9 +56,14 @@ public class EnemyJuggling : MonoBehaviour
     public void Sleeptime(){
         velocitySave = body.velocity;
         body.constraints = RigidbodyConstraints2D.FreezeAll | RigidbodyConstraints2D.FreezeRotation;
+        aux = 1;
     }
     public void WakeTime(){
         body.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
         body.velocity = velocitySave;
+
+        animator.SetBool("hitF", false);
+        animator.SetBool("hitM", false);
+        animator.SetBool("hitL", false);
     }
 }

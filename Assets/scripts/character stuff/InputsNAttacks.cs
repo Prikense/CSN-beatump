@@ -34,12 +34,17 @@ public class InputsNAttacks : MonoBehaviour
     public  ColliderState hitBoxstate;
     [SerializeField] private LayerMask layers;
     private int aux = 0; //this is used for more than 2 multihit attacks, to spawn the differente hitboxes past #2
-
+    //hitbox stats, lets try using the class and not being idiots
+    [SerializeField] private Hitbox[] hitboxList;
 
     //attack stats
     [SerializeField] private int dmg = 0;
     [SerializeField] private int knockbackForce = 0;
-    private bool launcher = false;
+    private bool wllBounce = false;
+    private bool kockDown = false;
+    private int dmgHLM = 0;
+    private Vector3[] angle = {Vector3.zero, Vector3.zero}; // 0 -> ground, 1 -> air
+
     private int hitStun = 0;
     [SerializeField] public float hitStopTime = 0;
     [SerializeField] public bool hitStop = false;
@@ -52,6 +57,8 @@ public class InputsNAttacks : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hitboxInitialization();        
+
         body = transform.GetComponent<Rigidbody2D>();
 
         moveScript = transform.GetComponent<movement>();
@@ -59,6 +66,120 @@ public class InputsNAttacks : MonoBehaviour
         animator = transform.GetComponentInChildren<Animator>();
 
         // bodyCollider = transform.GetComponent<BoxCollider2D>();
+    }
+
+    void hitboxInitialization(){
+        //fuck me, hitbox initialization
+        hitboxList = new Hitbox[]{
+        //2p -> 0
+        new Hitbox ("NAN-2P", //anim name
+        new Vector3 (1.55f, -0.745f, 0), //position
+        new Vector3 (1.44f, 1f, 1f), //size
+     //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?,  dmgZone
+            true,  10,    20,      0,     30,       5,      12,       false,     false,   2),
+        //5p -> 1
+        new Hitbox ("NAN-5P", //anim name
+        new Vector3 (1.8f, 0.2f, 0), //position
+        new Vector3 (1.2f, 2.15f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  25,    38,      0,     5,       10,      26,        false,     false,  0),
+        //2k -> 2
+        new Hitbox ("NAN-2K", //anim name
+        new Vector3 (1.1f, -1.1f, 0), //position
+        new Vector3 (1.25f, 1.7f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  15,    26,      0,     30,       5,      12,       false,     false,  2),
+        //5k -> 3
+        new Hitbox ("NAN-5K", //anim name
+        new Vector3 (1.73f, -.5f, 0), //position
+        new Vector3 (1.71f, 1.4f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?,  dmgZone
+            false,  40,    36,      0,     10,       9,      30,       false,      true,   1),
+        //2s -> 4
+        new Hitbox ("NAN-2S", //anim name
+        new Vector3 (2.25f, 0.16f, 0), //position
+        new Vector3 (2f, 3.24f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  40,    20,      0,     25,       7,      16,       false,     false,  0),
+        //5s -> 5
+        new Hitbox ("NAN-5S", //anim name
+        new Vector3 (3.275f, 0f, 0), //position
+        new Vector3 (4f, .8f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  60,    28,      0,     10,       7,      17,       false,     false,  1),
+        //2h -> 6
+        new Hitbox ("NAN-2H", //anim name
+        new Vector3 (1.48f, -.95f, 0), //position
+        new Vector3 (1.85f, 1.8f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  30,    40,      80,     80,      6,      45,       false,     false,  1),
+        //2h -> 7 2nd hit 
+        new Hitbox ("NAN-2H", //anim name
+        new Vector3 (2.25f, .83f, 0), //position
+        new Vector3 (2f, 2.6f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  25,    40,      80,   110,       7,      45,       false,     false,  1),
+        //5h -> 8
+        new Hitbox ("NAN-5H", //anim name
+        new Vector3 (1.4f, -.4f, 0), //position
+        new Vector3 (2.9f, 1.15f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  75,    45,      0,     10,      10,      45,       true,     true,  1),
+        //jp -> 9
+        new Hitbox ("NAN-jP", //anim name
+        new Vector3 (1.2f, -.63f, 0), //position
+        new Vector3 (1f, 1.24f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             true,  15,    15,      0,     5,      6,      15,       false,     false,  0),
+        //jk -> 10
+        new Hitbox ("NAN-jK", //anim name
+        new Vector3 (1.95f, -.58f, 0), //position
+        new Vector3 (1.15f, 2.46f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  25,    18,      0,     10,      7,      16,       false,     false,  0),
+        //jk -> 11 late hitbox
+        new Hitbox ("NAN-jK", //anim name
+        new Vector3 (1.67f, -.17f, 0), //position
+        new Vector3 (1.13f, .97f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+            false,  12,    9,       0,     10,       3,       7,       false,     false,  0),
+        //js -> 12
+        new Hitbox ("NAN-jS", //anim name
+        new Vector3 (1.73f, -.71f, 0), //position
+        new Vector3 (2.3f, 1.28f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             false,  25,    10,     0,      0,       6,       8,       false,     false,  0),
+        //js -> 13 hitbox 2
+        new Hitbox ("NAN-jS", //anim name
+        new Vector3 (2.13f, -.55f, 0), //position
+        new Vector3 (2.3f, 1.28f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             false,  15,    1,      0,      0,       4,       8,       false,     false,  0),
+        //js -> 14 hitbox 3
+        new Hitbox ("NAN-jS", //anim name
+        new Vector3 (1.73f, -.71f, 0), //position
+        new Vector3 (2.3f, 1.28f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             false,  15,    1,      0,      0,       4,       8,       false,     false,  0),
+        //js -> 15 hitbox 4
+        new Hitbox ("NAN-jS", //anim name
+        new Vector3 (1.69f, -.35f, 0), //position
+        new Vector3 (2.3f, 1.28f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             false,  25,    10,     0,     75,       7,      15,       false,     false,  0),
+        //jh -> 16
+        new Hitbox ("NAN-jH", //anim name
+        new Vector3 (1.97f, .4f, 0), //position
+        new Vector3 (1.8f, 1.47f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             false, 60,    25,     65,     65,       9,       30,       false,     true,  0),
+        //jh -> 17 late hitbox
+        new Hitbox ("NAN-jH", //anim name
+        new Vector3 (1.57f, -.95f, 0), //position
+        new Vector3 (1.94f, 2.17f, 1f), //size
+      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
+             false, 60,    25,     65,     65,       9,       30,       false,     true,  0),
+        };
     }
 
     // Update is called once per frame
@@ -298,8 +419,8 @@ public class InputsNAttacks : MonoBehaviour
                 Debug.Log("sleepy time");
                 animator.enabled = false;
                 moveScript.Sleeptime();
-        
-                EnScript.animator.enabled = false;
+
+
                 EnScript.Sleeptime();
             }
         }
@@ -331,13 +452,33 @@ public class InputsNAttacks : MonoBehaviour
         EnScript.hitStunAmount = hitStun;
 
         //knockback
-        if(launcher){// for vertical launching moves
-            EnScript.body.AddForce(knockbackForce*(transform.right+transform.up), ForceMode2D.Impulse);
-        }else if(EnScript.isGrounded){//if on the ground
-            EnScript.body.AddForce(knockbackForce*(transform.right), ForceMode2D.Impulse);
-        }else{//a normal hit on air
-            EnScript.body.AddForce(knockbackForce*(transform.right+transform.up/1.2f), ForceMode2D.Impulse);
+        if(EnScript.isGrounded){
+            EnScript.body.AddForce(knockbackForce*angle[0], ForceMode2D.Impulse);
+        }else{
+            EnScript.body.AddForce(knockbackForce*angle[1], ForceMode2D.Impulse);
         }
+
+        //for enemy dmg animation
+        switch(dmgHLM){
+            case 0:
+                EnScript.animator.SetBool("hitF", true);
+                break;
+            case 1:
+                EnScript.animator.SetBool("hitM", true);
+                break;
+            case 2:
+                EnScript.animator.SetBool("hitL", true);
+                break;
+        }
+
+        //old code
+        // if(launcher){// for vertical launching moves
+        //     EnScript.body.AddForce(knockbackForce*(transform.right+transform.up), ForceMode2D.Impulse);
+        // }else if(EnScript.isGrounded){//if on the ground
+        //     EnScript.body.AddForce(knockbackForce*(transform.right), ForceMode2D.Impulse);
+        // }else{//a normal hit on air
+        //     EnScript.body.AddForce(knockbackForce*(transform.right+transform.up/1.2f), ForceMode2D.Impulse);
+        // }
 
         //jump cancel for 2k, 2s and 2h
         if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2K") ||
@@ -351,223 +492,44 @@ public class InputsNAttacks : MonoBehaviour
         hitStop = true;
     }
     
-    
+    //spawn the hitbox with the ID from the hitbox array
+    public void hitboxSpawn(int id){
+        if((id == 17 || id == 11) && gatlingCancel){
+            return;
+        }
+        //we create a new hitbox because fuck me idk
+        Hitbox a = hitboxList[id];
 
-    public void hitboxStuff(){
-        //Debug.Log("hitbox stuff is active");
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2P")){
-            //hitbox activation
-            boxPos = new Vector3 (1.55f, -0.745f, 0);
-            boxSize = new Vector3 (1.44f, 1f, 1f);
-            hitBoxstate = ColliderState.active;
-            gatlingCancel = true;
-            dmg = 10;
-            knockbackForce = 30;
-            hitStopTime = 5;
-            hitStun = 12;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5P")){
-            //hitbox activation
-            boxPos = new Vector3 (1.8f, 0.2f, 0);
-            boxSize = new Vector3 (1.2f, 2.15f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 30;
-            knockbackForce = 18;
-            hitStopTime = 8;
-            hitStun = 22;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2K")){
-            //hitbox activation
-            boxPos = new Vector3 (1.1f, -1.1f, 0);
-            boxSize = new Vector3 (1.25f, 1.7f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 20;
-            knockbackForce = 16;
-            hitStopTime = 5;
-            hitStun = 12;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5K")){
-            //hitbox activation
-            boxPos = new Vector3 (1.73f, -.5f, 0);
-            boxSize = new Vector3 (1.71f, 1.4f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 60;
-            knockbackForce = 20;
-            hitStopTime = 9;
-            body.velocity = 12*(transform.right)+8*transform.up;
-            hitStun = 30;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2S")){
-            //hitbox activation
-            boxPos = new Vector3 (2.25f, 0.16f, 0);
-            boxSize = new Vector3 (2f, 3.24f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 50;
-            knockbackForce = 15;
-            hitStopTime = 5;
-            hitStun = 16;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5S")){
-            //hitbox activation
-            boxPos = new Vector3 (3.275f, 0f, 0);
-            boxSize = new Vector3 (4f, 0.8f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 60;
-            knockbackForce = 18;
-            hitStopTime = 6;
-            hitStun = 15;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2H")){
-            //hitbox activation
-            boxPos = new Vector3 (1.48f, -.95f, 0);
-            boxSize = new Vector3 (1.85f, 1.8f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 30;
-            knockbackForce = 5;
-            hitStopTime = 6;
-            body.velocity = 10*(transform.right);
-            hitStun = 40;
-            launcher = true;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5H")){
-            //hitbox activation
-            boxPos = new Vector3 (1.4f, -.4f, 0);
-            boxSize = new Vector3 (2.9f, 1.15f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 80;
-            knockbackForce = 22;
-            hitStopTime = 10;
-            hitStun = 35;
-            launcher = false;
-        }
+        //stats
+        string name = a.stateName;
+        boxPos = a.hitboxPos;
+        boxSize = a.hitboxSize;
+        gatlingCancel = a.selfCancel;
+        dmg = a.Dmg;
+        knockbackForce = a.knockbackForce;
+        angle[0] =  a.GroundAngle;
+        angle[1] = a.AirAngle;
+        hitStopTime = a.charHitStop;
+        hitStun = a.EnemyhitStun;
+        wllBounce = a.doWallbounce;
+        kockDown = a.knockdown;
+        dmgHLM = a.dmgZone;
 
-        //air normals
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jP")){
-            //hitbox activation
-            boxPos = new Vector3 (1.2f, -.63f, 0);
-            boxSize = new Vector3 (1f, 1.24f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 15;
-            knockbackForce = 3;
-            hitStopTime = 5;
-            gatlingCancel = true;
-            hitStun = 15;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK")){
-            //hitbox activation
-            boxPos = new Vector3 (1.95f, -.58f, 0);
-            boxSize = new Vector3 (1.15f, 2.46f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 25;
-            knockbackForce = 12;
-            hitStopTime = 6;
-            hitStun = 16;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS")){
-            //hitbox activation
-            boxPos = new Vector3 (1.73f, -.71f, 0);
-            boxSize = new Vector3 (2.3f, 1.28f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 30;
-            if(aux != 0){
-                dmg = 20;
-                hitStun = 10;
-                launcher = false;
-            }
-            knockbackForce = 4;
-            hitStopTime = 4;
-            hitStun = 12;
-            launcher = false;
-        }
-        if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jH")){
-            //hitbox activation
-            boxPos = new Vector3 (1.97f, .4f, 0);
-            boxSize = new Vector3 (1.8f, 1.47f, 1f);
-            hitBoxstate = ColliderState.active;
-            dmg = 70;
-            knockbackForce = 25;
-            hitStopTime = 9;
-            hitStun = 30;
-            launcher = true;
+        hitBoxstate = ColliderState.active;
+
+        switch (id){//for adding impulse on certain moves (it has to be done manually so yeah)
+            case 0:
+                break;
+            case 3://5k
+                body.velocity = 12*(transform.right)+8*transform.up;
+                break;
+            case 6://2h
+                body.velocity = 10*(transform.right);
+                break;
+            default:
+                break;
         }
     }
-
-    //for resizing or moving 2nd hitboxes on moves
-    public void hitboxResizeNstuff(){
-        if(animator.GetCurrentAnimatorStateInfo(0).normalizedTime > .14f){
-            if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-2H")){
-                //hitbox activation
-                boxPos = new Vector3 (2.25f, .83f, 0);
-                boxSize = new Vector3 (2f, 2.6f, 1f);
-                hitBoxstate = ColliderState.active;
-                dmg = 40;
-                knockbackForce = 12;
-                hitStopTime = 8;
-                hitStun = 40;
-                launcher = false;
-            }
-            //for air hitboxes
-            if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jK") && !gatlingCancel){
-                //hitbox activation
-                boxPos = new Vector3 (1.67f, -.17f, 0);
-                boxSize = new Vector3 (1.13f, .97f, 1f);
-                hitBoxstate = ColliderState.active;
-                dmg = 12;
-                knockbackForce = 9;
-                hitStopTime = 3;
-                hitStun = 6;
-                launcher = false;
-            }
-            if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jS")){
-                switch(aux){
-                    case 0:
-                        //hitbox activation
-                        boxPos = new Vector3 (2.13f, -.55f, 0);
-                        boxSize = new Vector3 (2.3f, 1.28f, 1f);
-                        hitBoxstate = ColliderState.active;
-                        dmg = 20;
-                        aux=1;
-                        knockbackForce = 15;
-                        hitStopTime = 4;
-                        hitStun = 6;
-                        launcher = false;
-                        break;
-                    case 1:
-                        //hitbox activation
-                        boxPos = new Vector3 (1.69f, -.35f, 0);
-                        boxSize = new Vector3 (1.52f, 1.8f, 1f);
-                        hitBoxstate = ColliderState.active;
-                        dmg = 40;
-                        aux =0;
-                        knockbackForce = 15;
-                        hitStopTime = 6;
-                        hitStun = 20;
-                        launcher = true;
-                        break;
-                }
-            }
-            if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jH") && !gatlingCancel){
-                //hitbox activation
-                boxPos = new Vector3 (1.57f, -.95f, 0);
-                boxSize = new Vector3 (1.94f, 2.17f, 1f);
-                hitBoxstate = ColliderState.active;
-                dmg = 70;
-                knockbackForce = 25;
-                hitStopTime = 9;
-                hitStun = 30;
-                launcher = true;
-            }
-        }
-    }
-
     private void OnDrawGizmos() {
         changeHitboxColor();
 
@@ -593,36 +555,5 @@ public class InputsNAttacks : MonoBehaviour
         if(hitStop){
             hitStopTime -= 1;
         }
-    }
-}
-
-public enum ColliderState{
-    active,
-    inactive
-}
-
-public enum posibleInputs{
-    a,
-    b,
-    c,
-    d,
-    e,
-    assist,
-    two,
-    three,
-    six,
-    nine,
-    eight,
-    seven,
-    four,
-    one
-}
-public class inputNtime{
-    public posibleInputs inputToDo;
-    public float pressedTime;
-
-    public inputNtime(posibleInputs a, float b){
-        inputToDo = a;
-        pressedTime = b;
     }
 }

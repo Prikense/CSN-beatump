@@ -17,12 +17,19 @@ public class animationEventsHandler : MonoBehaviour
     // public void jumpEvent(){
     //     inputScript.moveScript.jumpTime();
     // }
-    public void hitboxActive(){
-        inputScript.hitboxStuff();
+    // public void hitboxActive(){
+    //     inputScript.hitboxStuff();
+    // }
+    // public void hitboxChange(){
+    //     inputScript.hitboxResizeNstuff();
+    // }
+    // public void hitboxActive(){
+    //     inputScript.hitboxStuff();
+    // }
+    public void hitboxFunc(int a){
+        inputScript.hitboxSpawn(a);
     }
-    public void hitboxChange(){
-        inputScript.hitboxResizeNstuff();
-    }
+
     public void hitboxDeactivate(){
         // inputScript.hitbox.SetActive(false);
         inputScript.hitBoxstate = ColliderState.inactive;
