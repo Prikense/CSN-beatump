@@ -152,6 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51016b4c968d3d48b0f97c8044cd7f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemy: {fileID: 2112263235}
+  playerMove: {fileID: 845715826}
 --- !u!4 &3136799
 Transform:
   m_ObjectHideFlags: 0
@@ -800,8 +802,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 300
   fallSpeed: 4
-  JumpHeight: 55
-  jumpSpeed: 14
+  JumpHeight: 50
+  jumpSpeed: 10
   isGrounded: 0
   Speed: {x: 0, y: 0}
   currentFloorHeight: -2
@@ -1115,7 +1117,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.35, y: 3.7}
+  m_Size: {x: 1.7, y: 3.7}
   m_EdgeRadius: 0
 --- !u!4 &2112263234
 Transform:
@@ -1125,7 +1127,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2112263231}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.87, y: 2.83, z: 0}
+  m_LocalPosition: {x: -2.02, y: 2.83, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

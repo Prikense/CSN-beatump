@@ -21,9 +21,9 @@ public class movement : MonoBehaviour
     [SerializeField] private float keyY;
 
     //animation stuff
-    [SerializeField] private Animator animator;
+    [SerializeField] public Animator animator;
     // [SerializeField] private bool jumpTime = false;//used for giving the initial jump boost
-    [SerializeField] private bool jumpSquat =false;
+    [SerializeField] public bool jumpSquat =false;
     [SerializeField] private LayerMask gMask;
     [SerializeField] private InputsNAttacks inputScript;
     private bool specialBoost = false;
