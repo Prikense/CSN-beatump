@@ -55,7 +55,7 @@ public class InputsNAttacks : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         hitboxInitialization();        
 
@@ -76,7 +76,7 @@ public class InputsNAttacks : MonoBehaviour
         new Vector3 (1.55f, -0.745f, 0), //position
         new Vector3 (1.44f, 1f, 1f), //size
      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?,  dmgZone
-            true,  10,    20,      0,     30,       5,      12,       false,     false,   2),
+            true,  10,    40,      0,     30,       5,      12,       false,     false,   2),
         //5p -> 1
         new Hitbox ("NAN-5P", //anim name
         new Vector3 (1.8f, 0.2f, 0), //position

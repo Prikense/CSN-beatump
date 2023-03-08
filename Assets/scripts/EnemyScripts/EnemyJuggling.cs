@@ -17,6 +17,8 @@ public class EnemyJuggling : MonoBehaviour
     //animator stuff
     [SerializeField] public Animator animator;
     [SerializeField] public InputsNAttacks playerInScript;
+
+    [SerializeField] private Transform sprite;
     private int aux = 2;
 
     // Start is called before the first frame update
@@ -25,6 +27,8 @@ public class EnemyJuggling : MonoBehaviour
         body = transform.GetComponent<Rigidbody2D>();
 
         animator = transform.GetComponentInChildren<Animator>();
+
+        sprite = transform.GetChild(0);
     }
 
     // Update is called once per frame
@@ -44,12 +48,22 @@ public class EnemyJuggling : MonoBehaviour
             animator.enabled = false;
             aux = 2;
         }
-        //gravity
-        if(!isGrounded){
-            body.velocity -= new Vector2 (0,fallSpeed);
-        }
+        frictionAndGrav();
+
         if(hitStunAmount > 0 && !playerInScript.hitStop){
             hitStunAmount--;
+        }
+        try{
+            if(playerInScript.hitStop){
+                if(Time.frameCount % 2 == 0){
+                    sprite.position += Vector3.right*(-.1f);
+                }else{
+                    sprite.position += Vector3.right*(.1f);
+                }
+            }
+
+        }catch{
+            return;
         }
     }
 
@@ -58,6 +72,7 @@ public class EnemyJuggling : MonoBehaviour
         body.constraints = RigidbodyConstraints2D.FreezeAll | RigidbodyConstraints2D.FreezeRotation;
         aux = 1;
     }
+
     public void WakeTime(){
         body.constraints = RigidbodyConstraints2D.None | RigidbodyConstraints2D.FreezeRotation;
         body.velocity = velocitySave;
@@ -65,5 +80,14 @@ public class EnemyJuggling : MonoBehaviour
         animator.SetBool("hitF", false);
         animator.SetBool("hitM", false);
         animator.SetBool("hitL", false);
+    }
+
+    void frictionAndGrav(){
+        //gravity
+        if(!isGrounded){
+            body.velocity -= new Vector2 (0,fallSpeed);
+        }else{//friction
+            body.velocity -= body.velocity/6;
+        }
     }
 }
