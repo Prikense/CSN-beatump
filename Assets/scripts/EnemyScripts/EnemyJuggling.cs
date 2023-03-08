@@ -6,6 +6,11 @@ public class EnemyJuggling : MonoBehaviour
 {
     //hitstun
     [SerializeField] public int hitStunAmount = 0;
+    private int totalHitStun = 14;
+    //animation takes 14 frames
+    //if hitstun is greater we should play the animation a little slower
+    //(i think it should be 20 tho maybe because we eat the first frame that is 5 or 6 frames less?)
+
     //Stats
     [SerializeField] public int health = 1000;
     [SerializeField] private int fallSpeed = 1;
@@ -36,12 +41,15 @@ public class EnemyJuggling : MonoBehaviour
     {
         //ground check
         isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.1f, gMask);
-        //animator variables update
-        animator.SetBool("grounded", isGrounded);
-        animator.SetInteger("SpeedY", (int)body.velocity.y);
     }
 
     void FixedUpdate(){
+        //animator variables update
+        animator.SetBool("grounded", isGrounded);
+        animator.SetInteger("SpeedY", (int)body.velocity.y);
+        animator.SetInteger("hitStun", hitStunAmount);
+        animator.SetFloat("animSpeed", 14f/totalHitStun);
+
         if (aux == 1){
             aux--;
         }else if(aux == 0){
@@ -53,6 +61,11 @@ public class EnemyJuggling : MonoBehaviour
         if(hitStunAmount > 0 && !playerInScript.hitStop){
             hitStunAmount--;
         }
+        if(hitStunAmount == 0){
+            totalHitStun = 14;
+        }
+
+
         try{
             if(playerInScript.hitStop){
                 if(Time.frameCount % 2 == 0){
@@ -69,7 +82,9 @@ public class EnemyJuggling : MonoBehaviour
 
     public void Sleeptime(){
         velocitySave = body.velocity;
+        totalHitStun = hitStunAmount;
         body.constraints = RigidbodyConstraints2D.FreezeAll | RigidbodyConstraints2D.FreezeRotation;
+        // animator.SetFloat("animSpeed", 20f/totalHitStun);
         aux = 1;
     }
 
