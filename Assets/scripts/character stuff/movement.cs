@@ -53,6 +53,12 @@ public class movement : MonoBehaviour
     }
 
     void Update(){
+        if(transform.position.y <= hitboxStorer.groundLevel){
+            isGrounded = true;
+            // transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
+        }else{
+            isGrounded = false;
+        }
         //input managing
         float keyY = Input.GetAxisRaw("Vertical");
 
@@ -99,15 +105,6 @@ public class movement : MonoBehaviour
         }
     }
 
-
-        //collisions
-        // private void OnTriggerStay2D(Collider2D a){
-        //     if(a == hitboxStorer.enemyCollBox){
-        //         body.velocity = body.velocity/4;
-        //         a.transform.GetComponent<Rigidbody2D>().velocity = body.velocity;
-        //     }
-        // }
-
     void FixedUpdate(){
 
         if(jumpSquat){
@@ -119,12 +116,6 @@ public class movement : MonoBehaviour
         if(transform.position.y + body.velocity.y*Time.fixedDeltaTime <= hitboxStorer.groundLevel){
             transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
             body.velocity = new Vector2 (body.velocity.x, 0);
-        }
-        if(transform.position.y <= hitboxStorer.groundLevel){
-            isGrounded = true;
-            // transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
-        }else{
-            isGrounded = false;
         }
         
         if(!inputScript.hitStop){

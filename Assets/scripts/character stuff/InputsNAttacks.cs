@@ -125,7 +125,7 @@ public class InputsNAttacks : MonoBehaviour
         }
 
         //buffer system
-        if(gatlingCancel && !hitStop){
+        if(gatlingCancel && !hitStop && !moveScript.jumpSquat){
             if(bufferlist.Count > 0){
                 foreach (inputNtime a in bufferlist.ToArray()){
                     bufferlist.Remove(a);

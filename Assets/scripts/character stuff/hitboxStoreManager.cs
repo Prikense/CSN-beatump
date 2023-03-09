@@ -14,73 +14,73 @@ public class hitboxStoreManager : MonoBehaviour
         new Vector3 (1.55f, -0.745f, 0), //position
         new Vector3 (1.44f, 1f, 1f), //size
      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?,  dmgZone
-            true,  10,    10,      0,     45,       5,      12,       false,     false,   1),
+            true,  10,    7,      0,     45,       5,      12,       false,     false,   1),
         //5p -> 1
         new Hitbox ("NAN-5P", //anim name
-        new Vector3 (1.8f, 0.2f, 0), //position
-        new Vector3 (1.2f, 2.15f, 1f), //size
+        new Vector3 (1.42f, 0.2f, 0), //position
+        new Vector3 (2f, 2.15f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  25,    150,      0,     30,       10,      30,        false,     false,  1),
+            false,  25,    15,      0,     30,       10,      30,        false,     false,  1),
         //2k -> 2
         new Hitbox ("NAN-2K", //anim name
         new Vector3 (1.1f, -1.1f, 0), //position
         new Vector3 (1.25f, 1.7f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  15,    85,      0,     -20,       5,      14,       false,     false,  2),
+            false,  15,    8,      0,     -20,       5,      14,       false,     false,  2),
         //5k -> 3
         new Hitbox ("NAN-5K", //anim name
         new Vector3 (1.73f, -.5f, 0), //position
         new Vector3 (1.71f, 1.4f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?,  dmgZone
-            false,  40,    180,      25,     25,       9,      25,       false,      true,   1),
+            false,  40,    18,      25,     25,       9,      25,       false,      true,   1),
         //2s -> 4
         new Hitbox ("NAN-2S", //anim name
         new Vector3 (2.25f, 0.16f, 0), //position
         new Vector3 (2f, 3.24f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  40,    90,      0,     25,       7,      16,       false,     false,  0),
+            false,  40,    9,      0,     25,       7,      16,       false,     false,  0),
         //5s -> 5
         new Hitbox ("NAN-5S", //anim name
         new Vector3 (3.275f, 0f, 0), //position
         new Vector3 (4f, .8f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  60,    90,      0,     10,       7,      17,       false,     false,  1),
+            false,  60,    9,      0,     10,       7,      17,       false,     false,  1),
         //2h -> 6
         new Hitbox ("NAN-2H", //anim name
         new Vector3 (1.48f, -.95f, 0), //position
         new Vector3 (1.85f, 1.8f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  30,    250,    80,     80,      6,      35,       false,     false,  1),
+            false,  30,    25,    80,     80,      6,      35,       false,     false,  1),
         //2h -> 7 2nd hit 
         new Hitbox ("NAN-2H", //anim name
         new Vector3 (2.25f, .83f, 0), //position
         new Vector3 (2f, 2.6f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  25,    300,      80,    90,       7,      35,       false,     false,  1),
+            false,  25,    30,      80,    90,       7,      35,       false,     false,  1),
         //5h -> 8
         new Hitbox ("NAN-5H", //anim name
         new Vector3 (1.4f, -.4f, 0), //position
         new Vector3 (2.9f, 1.15f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  75,    150,      0,     20,      10,      45,       true,     true,  1),
+            false,  75,    15,      0,     20,      10,      45,       true,     true,  1),
         //jp -> 9
         new Hitbox ("NAN-jP", //anim name
         new Vector3 (1.2f, -.63f, 0), //position
         new Vector3 (1f, 1.24f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-             true,  15,    20,      0,     5,      6,      15,       false,     false,  0),
+             true,  15,    2,      0,     5,      6,      15,       false,     false,  0),
         //jk -> 10
         new Hitbox ("NAN-jK", //anim name
         new Vector3 (1.95f, -.58f, 0), //position
         new Vector3 (1.15f, 2.46f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  25,    30,      0,     40,      7,      16,       false,     false,  0),
+            false,  25,    3,      0,     40,      7,      16,       false,     false,  0),
         //jk -> 11 late hitbox
         new Hitbox ("NAN-jK", //anim name
         new Vector3 (1.67f, -.17f, 0), //position
         new Vector3 (1.13f, .97f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
-            false,  12,    9,       0,     10,       3,       7,       false,     false,  0),
+            false,  12,    1,       0,     10,       3,       7,       false,     false,  0),
         //js -> 12
         new Hitbox ("NAN-jS", //anim name
         new Vector3 (1.73f, -.71f, 0), //position
@@ -148,9 +148,9 @@ public class hitboxStoreManager : MonoBehaviour
     //         Physics2D.IgnoreCollision(playerMove.transform.GetComponent<Collider2D>(),enemy.transform.GetComponent<Collider2D>(), false);
     //     }
 
-        // Debug.Log(Mathf.Cos(Vector3.Angle(playerMove.transform.position, enemy.transform.position)*Mathf.PI/180));
-        Debug.Log((playerMove.transform.position.x -enemy.transform.position.x,
-                   playerMove.transform.position.y - enemy.transform.position.y));
+        //angle between the 2 points (vector)
+        // Debug.Log((playerMove.transform.position.x -enemy.transform.position.x,
+        //            playerMove.transform.position.y - enemy.transform.position.y));
 
         if(enemyCollBox.Distance(playerCollBox).distance >= 0f
            || ((playerMove.isGrounded != enemy.isGrounded) 
