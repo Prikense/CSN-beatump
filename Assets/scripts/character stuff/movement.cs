@@ -191,7 +191,7 @@ public class movement : MonoBehaviour
                 body.velocity -= body.velocity/3;
             }
         }
-        if(iscolliding){
+        if(iscolliding && isGrounded){
             body.velocity = new Vector2(body.velocity.x/3, body.velocity.y);
         }
     }
