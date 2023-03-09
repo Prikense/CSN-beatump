@@ -12,7 +12,6 @@ public class movement : MonoBehaviour
     [SerializeField]private int jumpSpeed;//initial left-right jump force
     [SerializeField]public bool isGrounded;
     [SerializeField] private Vector2 Speed;
-    [SerializeField]private float currentFloorHeight;
     [SerializeField] public  GameObject anchor;
 
     //input
@@ -24,24 +23,32 @@ public class movement : MonoBehaviour
     [SerializeField] public Animator animator;
     // [SerializeField] private bool jumpTime = false;//used for giving the initial jump boost
     [SerializeField] public bool jumpSquat =false;
-    [SerializeField] private LayerMask gMask;
+    [SerializeField] private LayerMask collisionMask;
     [SerializeField] private InputsNAttacks inputScript;
     private bool specialBoost = false;
-    private float aux = 0;
-    private float squatFrames = 3f/60f;
+    [SerializeField] private int aux = 0;
+    private int squatFrames = 3;
     [SerializeField] private bool dJump = true;
     private bool jumpHold = false;
     [SerializeField] private Vector2 velocitySave = Vector2.zero;
 
+    [SerializeField] private Collider2D playerCollBox;
+
+[SerializeField] private hitboxStoreManager hitboxStorer;
 
     // Start is called before the first frame update
     void Start()
     {
+        playerCollBox = transform.GetComponent<Collider2D>();
+
         body = transform.GetComponent<Rigidbody2D>();
 
         inputScript = transform.GetComponent<InputsNAttacks>();
  
         animator = transform.GetComponentInChildren<Animator>();
+
+        hitboxStorer = GameObject.FindObjectOfType<hitboxStoreManager>();
+
     }
 
     //input managing
@@ -51,7 +58,7 @@ public class movement : MonoBehaviour
         //walking
         //we get the input first
         float keyX = Input.GetAxisRaw("Horizontal");
-        isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.1f, gMask);
+        // isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.1f, gMask);
 
         animator.SetFloat("speed", Speed.x);
         animator.SetBool("grounded", isGrounded);
@@ -78,11 +85,6 @@ public class movement : MonoBehaviour
         if(animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal") && !inputScript.jumpCancel){
             jumpSquat =false;
         }
-        if(jumpSquat){
-            aux+=Time.deltaTime;
-        }else{
-            aux=0;
-        }
         //up input manager
         if(keyY <= 0){
             jumpHold = false;
@@ -98,6 +100,27 @@ public class movement : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate(){
+        
+        //collisions
+        
+
+        if(jumpSquat){
+            aux++;
+        }else{
+            aux=0;
+        }
+        // isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.1f, gMask);
+        if(transform.position.y + body.velocity.y*Time.fixedDeltaTime <= hitboxStorer.groundLevel){
+            transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
+            body.velocity = new Vector2 (body.velocity.x, 0);
+        }
+        if(transform.position.y <= hitboxStorer.groundLevel){
+            isGrounded = true;
+            // transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
+        }else{
+            isGrounded = false;
+        }
+        
         if(!inputScript.hitStop){
             MovementTime();
         }
@@ -115,40 +138,43 @@ public class movement : MonoBehaviour
 
     public void jumpTime(float a){
         aux=0;
-        body.velocity = new Vector2 (body.velocity.x,0);
-        body.AddForce(Vector2.up*JumpHeight+Vector2.right*jumpSpeed*a, ForceMode2D.Impulse);
+        // body.velocity = new Vector2 (body.velocity.x,0);
+        // body.AddForce(Vector2.up*JumpHeight+Vector2.right*jumpSpeed*a, ForceMode2D.Impulse);
+        // body.velocity = Vector2.up*JumpHeight+Vector2.right*jumpSpeed*a;
+        float expectedSpeed = (jumpSpeed*a);
+        //x speed capping
+         if(Mathf.Abs(expectedSpeed - body.velocity.x) <= 0){
+                body.velocity = new Vector2 (body.velocity.x,JumpHeight);
+            }else{
+            body.velocity = new Vector2 (expectedSpeed,JumpHeight);
+        }
     }
     public void jumpTime2(float a){
         aux=0;
         float expectedSpeed = (jumpSpeed*a);
-        body.velocity = new Vector2 (body.velocity.x,0);
+        // body.velocity = new Vector2 (body.velocity.x,0);
         //x speed capping
-         if(Mathf.Abs(expectedSpeed - body.velocity.x) <= 3){
-                body.velocity = new Vector2 (body.velocity.x,0);
+         if(Mathf.Abs(expectedSpeed - body.velocity.x) <= 0){
+                body.velocity = new Vector2 (body.velocity.x,JumpHeight/1.2f);
             }else{
-            body.velocity = new Vector2 (expectedSpeed,0);
+            body.velocity = new Vector2 (expectedSpeed,JumpHeight/1.2f);
         }
-        body.AddForce(Vector2.up*JumpHeight/1.2f, ForceMode2D.Impulse);
+        // body.AddForce(Vector2.up*JumpHeight/1.2f, ForceMode2D.Impulse);
     }
 
 
     void MovementTime(){
-        if(aux>=squatFrames){
+        if(aux>squatFrames){
             jumpSquat=false;
             jumpTime(Input.GetAxisRaw("Horizontal"));
         }else if(!isGrounded){
             body.velocity -= new Vector2 (0,fallSpeed);
-        }
-        // if(jumpTime){
-        //     body.AddForce(Vector2.up*JumpHeight+jumpSpeed*Speed, ForceMode2D.Impulse);
-        //     jumpTime = jumpSquat;
-        // }
-        if(Speed.x != 0 && (isGrounded && !animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jump"))){
+        }else if(Speed.x != 0 && (isGrounded && !animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jump"))){
             body.velocity = Speed*walkSpeed*Time.deltaTime;
         }else if(isGrounded){
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5K")){
                 //we reduce friction but also reset velocity yo 0 if they are going backwards
-                body.velocity = new Vector2(Mathf.Max(0, body.velocity.x), body.velocity.y);
+                body.velocity = new Vector2(Mathf.Max(0, body.velocity.x), Mathf.Max(body.velocity.y,0));
             }else if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5H") && !specialBoost){
                 body.velocity = 8*(transform.right);
                 specialBoost = true;//we only add this extra speed on the initial frames of this attack

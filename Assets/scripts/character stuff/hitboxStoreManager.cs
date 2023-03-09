@@ -5,6 +5,7 @@ using UnityEngine;
 public class hitboxStoreManager : MonoBehaviour
 {
 
+
     //we store NAN hitboxes for now, for clarity i will be making one of this for every char, maybe for every enemy
     [SerializeField] public Hitbox[] hitboxListNAN = new Hitbox[]{
         //fuck me, hitbox initialization
@@ -13,7 +14,7 @@ public class hitboxStoreManager : MonoBehaviour
         new Vector3 (1.55f, -0.745f, 0), //position
         new Vector3 (1.44f, 1f, 1f), //size
      //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?,  dmgZone
-            true,  10,    70,      0,     45,       5,      12,       false,     false,   1),
+            true,  10,    10,      0,     45,       5,      12,       false,     false,   1),
         //5p -> 1
         new Hitbox ("NAN-5P", //anim name
         new Vector3 (1.8f, 0.2f, 0), //position
@@ -122,6 +123,13 @@ public class hitboxStoreManager : MonoBehaviour
     [SerializeField] public EnemyJuggling enemy;
     [SerializeField] public movement playerMove;
 
+    //aaaaah this script is getting kinda out of hand, maybe i should change it to a game manager
+    //ground level for collisions and stuff
+    [SerializeField] public int groundLevel = -2;
+    //player and enemy colliders
+    [SerializeField] private Collider2D playerCollBox;
+    [SerializeField] private Collider2D enemyCollBox;
+
     
     void Awake()
     {
@@ -130,15 +138,15 @@ public class hitboxStoreManager : MonoBehaviour
     }
 
     void FixedUpdate(){
-        //works for now, dont forget to add the logic to get which player is currently active, also some grounded normals make you airborne so we add that exception
-        if(playerMove.isGrounded != enemy.isGrounded ||
-        ((!enemy.isGrounded && playerMove.animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal")) ||
-        (playerMove.jumpSquat && enemy.isGrounded))
-        ){
-            Physics2D.IgnoreCollision(playerMove.transform.GetComponent<Collider2D>(),enemy.transform.GetComponent<Collider2D>(), true);
-        }else{
-            Physics2D.IgnoreCollision(playerMove.transform.GetComponent<Collider2D>(),enemy.transform.GetComponent<Collider2D>(), false);
-        }
+    //     //works for now, dont forget to add the logic to get which player is currently active, also some grounded normals make you airborne so we add that exception
+    //     if(playerMove.isGrounded != enemy.isGrounded ||
+    //     ((!enemy.isGrounded && playerMove.animator.GetCurrentAnimatorStateInfo(0).IsTag("groundNormal")) ||
+    //     (playerMove.jumpSquat && enemy.isGrounded))
+    //     ){
+    //         Physics2D.IgnoreCollision(playerMove.transform.GetComponent<Collider2D>(),enemy.transform.GetComponent<Collider2D>(), true);
+    //     }else{
+    //         Physics2D.IgnoreCollision(playerMove.transform.GetComponent<Collider2D>(),enemy.transform.GetComponent<Collider2D>(), false);
+    //     }
     }
 
 }

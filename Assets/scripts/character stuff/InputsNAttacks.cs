@@ -33,7 +33,7 @@ public class InputsNAttacks : MonoBehaviour
     public Color activeColor;
     public  ColliderState hitBoxstate;
     [SerializeField] private LayerMask layers;
-    private int aux = 0; //this is used for more than 2 multihit attacks, to spawn the differente hitboxes past #2
+    // private int aux = 0; //this is used for more than 2 multihit attacks, to spawn the differente hitboxes past #2
 
     //hitbox stats, lets try using the class and not being idiots
     // [SerializeField] private Hitbox[] hitboxList;
@@ -62,6 +62,7 @@ public class InputsNAttacks : MonoBehaviour
     {
         // hitboxInitialization();        
         hitboxStorer = GameObject.FindObjectOfType<hitboxStoreManager>();
+
         body = transform.GetComponent<Rigidbody2D>();
 
         moveScript = transform.GetComponent<movement>();
@@ -287,7 +288,7 @@ public class InputsNAttacks : MonoBehaviour
            animator.IsInTransition(0)){
             hitBoxstate = ColliderState.inactive;
             jumpCancel = false;
-            aux = 0;
+            // aux = 0;
            }
         
 
@@ -333,9 +334,9 @@ public class InputsNAttacks : MonoBehaviour
         EnScript.body.velocity = Vector2.zero;
         //knockback
         if(EnScript.isGrounded){
-            EnScript.body.AddForce(knockbackForce*angle[0], ForceMode2D.Impulse);
+            EnScript.body.velocity = knockbackForce*angle[0];
         }else{
-            EnScript.body.AddForce(knockbackForce*angle[1], ForceMode2D.Impulse);
+            EnScript.body.velocity = knockbackForce*angle[1];
         }
 
         //for enemy dmg animation

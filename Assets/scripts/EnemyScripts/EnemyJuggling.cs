@@ -17,7 +17,7 @@ public class EnemyJuggling : MonoBehaviour
     [SerializeField] public Rigidbody2D body;
     [SerializeField]public bool isGrounded;
     [SerializeField] public  GameObject anchor;
-    [SerializeField] private LayerMask gMask;
+    [SerializeField] private LayerMask collisionMask;
     [SerializeField] private Vector2 velocitySave = Vector2.zero;
     //animator stuff
     [SerializeField] public Animator animator;
@@ -25,6 +25,8 @@ public class EnemyJuggling : MonoBehaviour
 
     [SerializeField] private Transform sprite;
     private int aux = 2;
+
+    private hitboxStoreManager hitboxStorer;
 
     // Start is called before the first frame update
     void Start()
@@ -34,16 +36,24 @@ public class EnemyJuggling : MonoBehaviour
         animator = transform.GetComponentInChildren<Animator>();
 
         sprite = transform.GetChild(0);
+
+        hitboxStorer = GameObject.FindObjectOfType<hitboxStoreManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //ground check
-        isGrounded = Physics2D.OverlapCircle(anchor.transform.position, 0.1f, gMask);
-    }
 
     void FixedUpdate(){
+        //ground check
+        if(transform.position.y + body.velocity.y*Time.fixedDeltaTime <= hitboxStorer.groundLevel){
+            transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
+            body.velocity = new Vector2 (body.velocity.x, 0);
+        }
+        if(transform.position.y <= hitboxStorer.groundLevel){
+            isGrounded = true;
+            // transform.position = new Vector3(transform.position.x,hitboxStorer.groundLevel,transform.position.z);
+        }else{
+            isGrounded = false;
+        }
+
         //animator variables update
         animator.SetBool("grounded", isGrounded);
         animator.SetInteger("SpeedY", (int)body.velocity.y);
@@ -102,6 +112,7 @@ public class EnemyJuggling : MonoBehaviour
         if(!isGrounded){
             body.velocity -= new Vector2 (0,fallSpeed);
         }else{//friction
+        // body.velocity = new Vector2 (body.velocity.x, 0);
             body.velocity -= body.velocity/6;
         }
     }
