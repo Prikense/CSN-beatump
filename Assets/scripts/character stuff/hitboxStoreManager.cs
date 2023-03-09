@@ -127,8 +127,8 @@ public class hitboxStoreManager : MonoBehaviour
     //ground level for collisions and stuff
     [SerializeField] public int groundLevel = -2;
     //player and enemy colliders
-    [SerializeField] private Collider2D playerCollBox;
-    [SerializeField] private Collider2D enemyCollBox;
+    [SerializeField] public Collider2D playerCollBox;
+    [SerializeField] public Collider2D enemyCollBox;
 
     
     void Awake()
@@ -147,6 +147,20 @@ public class hitboxStoreManager : MonoBehaviour
     //     }else{
     //         Physics2D.IgnoreCollision(playerMove.transform.GetComponent<Collider2D>(),enemy.transform.GetComponent<Collider2D>(), false);
     //     }
+
+        // Debug.Log(Mathf.Cos(Vector3.Angle(playerMove.transform.position, enemy.transform.position)*Mathf.PI/180));
+        Debug.Log((playerMove.transform.position.x -enemy.transform.position.x,
+                   playerMove.transform.position.y - enemy.transform.position.y));
+
+        if(enemyCollBox.Distance(playerCollBox).distance >= 0f
+           || ((playerMove.isGrounded != enemy.isGrounded) 
+           || (playerMove.animator.GetCurrentAnimatorStateInfo(0).IsTag("air") && enemy.isGrounded))){
+            playerMove.iscolliding = false;
+        }else{
+            playerMove.iscolliding = true;
+            enemyCollBox.transform.position = new Vector3 (enemyCollBox.transform.position.x+(enemyCollBox.Distance(playerCollBox).distance * Mathf.Sign(playerMove.transform.position.x -enemy.transform.position.x)),
+                                                           enemyCollBox.transform.position.y, enemyCollBox.transform.position.z);
+        }
     }
 
 }

@@ -824,6 +824,7 @@ MonoBehaviour:
   velocitySave: {x: 0, y: 0}
   playerCollBox: {fileID: 0}
   hitboxStorer: {fileID: 0}
+  iscolliding: 0
 --- !u!50 &845715827
 Rigidbody2D:
   serializedVersion: 4

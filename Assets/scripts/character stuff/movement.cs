@@ -34,7 +34,8 @@ public class movement : MonoBehaviour
 
     [SerializeField] private Collider2D playerCollBox;
 
-[SerializeField] private hitboxStoreManager hitboxStorer;
+    [SerializeField] private hitboxStoreManager hitboxStorer;
+    public bool iscolliding = false;
 
     // Start is called before the first frame update
     void Start()
@@ -51,8 +52,8 @@ public class movement : MonoBehaviour
 
     }
 
-    //input managing
     void Update(){
+        //input managing
         float keyY = Input.GetAxisRaw("Vertical");
 
         //walking
@@ -98,11 +99,16 @@ public class movement : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void FixedUpdate(){
-        
+
         //collisions
-        
+        // private void OnTriggerStay2D(Collider2D a){
+        //     if(a == hitboxStorer.enemyCollBox){
+        //         body.velocity = body.velocity/4;
+        //         a.transform.GetComponent<Rigidbody2D>().velocity = body.velocity;
+        //     }
+        // }
+
+    void FixedUpdate(){
 
         if(jumpSquat){
             aux++;
@@ -170,7 +176,7 @@ public class movement : MonoBehaviour
         }else if(!isGrounded){
             body.velocity -= new Vector2 (0,fallSpeed);
         }else if(Speed.x != 0 && (isGrounded && !animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-jump"))){
-            body.velocity = Speed*walkSpeed*Time.deltaTime;
+            body.velocity = Speed*walkSpeed*Time.fixedDeltaTime;
         }else if(isGrounded){
             if(animator.GetCurrentAnimatorStateInfo(0).IsName("NAN-5K")){
                 //we reduce friction but also reset velocity yo 0 if they are going backwards
@@ -182,8 +188,11 @@ public class movement : MonoBehaviour
                 body.velocity = 6*(transform.right);
                 specialBoost = true;//we only add this extra speed on the initial frames of this attack
             }else{
-                body.velocity -= body.velocity/6;
+                body.velocity -= body.velocity/3;
             }
+        }
+        if(iscolliding){
+            body.velocity = new Vector2(body.velocity.x/3, body.velocity.y);
         }
     }
 }
