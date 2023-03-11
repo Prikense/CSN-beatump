@@ -65,8 +65,8 @@ public class hitboxStoreManager : MonoBehaviour
             false,  75,    15,      0,     20,      10,      45,       true,     true,  1),
         //jp -> 9
         new Hitbox ("NAN-jP", //anim name
-        new Vector3 (1.2f, -.63f, 0), //position
-        new Vector3 (1f, 1.24f, 1f), //size
+        new Vector3 (1.30f, -.82f, 0), //position
+        new Vector3 (1.05f, 1.34f, 1f), //size
       //gatCancel, dmg, knock, angleG, angleA, hitstop, hitstun, wallbounce?, kockdown?, dmgZone
              true,  15,    2,      0,     5,      6,      15,       false,     false,  0),
         //jk -> 10
