@@ -272,47 +272,6 @@ public class InputsNAttacks : MonoBehaviour
             animator.SetBool("jh", heavyButton);
             gatlingCancel = false;
         }
-
-        //check for hitbox collision
-        if(hitBoxstate == ColliderState.active){
-            Collider2D collider2Dhit = Physics2D.OverlapBox(transform.position+boxPos, boxSize, 0f, layers);
-
-            if(collider2Dhit != null){
-                hitboxTrigger(collider2Dhit);
-            }
-        }
-
-        //hitbox Special Cases DEACTIVATION, if in idle/walk or in air
-        if(animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk") || 
-           animator.GetCurrentAnimatorStateInfo(0).IsTag("air") ||
-           animator.IsInTransition(0)){
-            hitBoxstate = ColliderState.inactive;
-            jumpCancel = false;
-            // aux = 0;
-           }
-        
-
-        //hitstop managing
-        if(hitStop){
-            if(animator.isActiveAndEnabled){
-                // Debug.Log("sleepy time");
-                animator.enabled = false;
-                moveScript.Sleeptime();
-
-
-                EnScript.Sleeptime();
-            }
-        }
-        if(hitStopTime <= 0 && !animator.isActiveAndEnabled){    
-            // Debug.Log("wakey wakey"); 
-            animator.enabled = true;
-            hitStop = false;
-            moveScript.WakeTime();
-
-            
-            EnScript.animator.enabled = true;
-            EnScript.WakeTime();
-        }
     }
 
 
@@ -430,6 +389,44 @@ public class InputsNAttacks : MonoBehaviour
     void FixedUpdate(){
         if(hitStop){
             hitStopTime -= 1;
+        }
+        //hitbox Special Cases DEACTIVATION, if in idle/walk or in air
+        if(animator.GetCurrentAnimatorStateInfo(0).IsTag("idleNwalk") || 
+           animator.GetCurrentAnimatorStateInfo(0).IsTag("air") ||
+           animator.IsInTransition(0)){
+            hitBoxstate = ColliderState.inactive;
+            jumpCancel = false;
+            // aux = 0;
+        }
+
+        //check for hitbox collision
+        if(hitBoxstate == ColliderState.active){
+            Collider2D collider2Dhit = Physics2D.OverlapBox(transform.position+boxPos, boxSize, 0f, layers);
+
+            if(collider2Dhit != null){
+                hitboxTrigger(collider2Dhit);
+            }
+        }
+        //hitstop managing
+        if(hitStop){
+            if(animator.isActiveAndEnabled){
+                // Debug.Log("sleepy time");
+                animator.enabled = false;
+                moveScript.Sleeptime();
+
+
+                EnScript.Sleeptime();
+            }
+        }
+        if(hitStopTime <= 0 && !animator.isActiveAndEnabled){    
+            // Debug.Log("wakey wakey"); 
+            animator.enabled = true;
+            hitStop = false;
+            moveScript.WakeTime();
+
+            
+            EnScript.animator.enabled = true;
+            EnScript.WakeTime();
         }
     }
 }

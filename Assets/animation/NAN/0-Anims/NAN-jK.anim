@@ -214,7 +214,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 11
     messageOptions: 0
-  - time: 0.28333333
+  - time: 0.31666666
     functionName: hitboxDeactivate
     data: 
     objectReferenceParameter: {fileID: 0}
