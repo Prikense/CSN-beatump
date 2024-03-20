@@ -727,7 +727,7 @@ SpriteRenderer:
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.04, y: 4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -804,8 +804,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 300
-  fallSpeed: 4
-  JumpHeight: 50
+  fallSpeed: 2
+  JumpHeight: 25
   jumpSpeed: 10
   isGrounded: 0
   Speed: {x: 0, y: 0}

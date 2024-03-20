@@ -42,6 +42,7 @@
      <Compile Include="Assets\scripts\character stuff\InputsNAttacks.cs" />
      <Compile Include="Assets\scripts\character stuff\hitboxStoreManager.cs" />
      <Compile Include="Assets\scripts\EnemyScripts\EnemyJuggling.cs" />
+     <None Include="Assets\animation\NAN\neko-arc nicko (NAN)\notas-frameData.txt" />
     <Reference Include="UnityEngine">
         <HintPath>E:\stuff idk\UNITY\installs\2021.3.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
